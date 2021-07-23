@@ -1,0 +1,12 @@
+.sticky-note {
+  height: 13vw;
+  width: 13vw;
+  background-color: #ffd70f;
+  display: inline-flex;
+  margin: 0.3vw;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+}
