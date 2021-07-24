@@ -13,6 +13,34 @@
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
     <style type="text/css">
+      form {
+        margin: 0 auto;
+        padding: 1em;
+        border: 1px solid #CCC;
+        border-radius: 1em;
+        box-shadow: 5px 5px 5px 5px;
+        background-color: beige;
+      }
+      label {
+        display: inline-block;
+        text-align: right;
+        font-size: 2em;
+      }
+      .formelem {
+        text-align: center;
+      }
+      textarea {
+        vertical-align: top;
+        width: 50%;
+        /* height: 30%; */
+      }
+      
+      input:focus,
+      textarea:focus {
+        /* Additional highlight for focused elements */
+        border-color: #000;
+      }
+      
     </style>
 
 </head>
@@ -91,20 +119,44 @@
       </div>
     </div> -->
   </div>
+
+  <form action="" method="get" id="form">
+    <div class="formelem">
+      <label for="msg">Message:</label>
+      <textarea id="msg" name="user_message"></textarea>
+    </div>
+    <div class="formelem">
+      <input type="submit" value="Send">
+    </div>
+  </form>
+
+
 </body>
 <script>
+  var searchParams = new URLSearchParams(window.location.search);
+  var uid = Date.now() % 10000;
+  var noteList = new Map();
 
-    var socket = new WebSocket(
-        'ws://' + window.location.host + '/ws/draw');
+  var socket = new WebSocket(
+      'ws://' + window.location.host + '/ws/draw');
 
-    //is called everytime message is received
-    socket.onmessage = function(receivedMessage) {
-        var received = JSON.parse(receivedMessage.data);
+  for (const [key, value] of searchParams) {
+    console.log("\nkey: " + key + "\nvalue: " + value);
+    if (key == "user_message") {
+      noteList.set(uid, value);
+      socket.send("{\"text\" : " + noteList.get(uid) + ", \"uid\" : " + uid + "}" );
     }
+  }
+  
+  //is called everytime message is received
+  socket.onmessage = function(receivedMessage) {
+    var received = JSON.parse(receivedMessage.data);
+    console.log(received);
+  }
 
-    socket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
-    };
+  socket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+  };
 
 </script>
 </html>
