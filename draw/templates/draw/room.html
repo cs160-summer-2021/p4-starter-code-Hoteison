@@ -13,7 +13,7 @@
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
 </head>
-<body class="bg-secondary">
+<body class="bg-secondary" onload="checkmsg()">
   <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
   <div class="container-flex" id = "board">
     <div class="row">
@@ -117,7 +117,6 @@
       'ws://' + window.location.host + '/ws/draw');
 
   for (const [key, value] of searchParams) {
-    console.log("\nkey: " + key + "\nvalue: " + value);
     if (key == "display") {
       if (value == "large") {
         let form = document.getElementById("form");
@@ -129,32 +128,47 @@
         board.style.display = "none";
       }
     }
-    if (small == true) {
-      let board = document.getElementById("board");
-      board.style.display = "none";
-    }
+  }
+
+  if (small == true) {
+    let board = document.getElementById("board");
+    board.style.display = "none";
+  }
+
+  function checkmsg() {
+    for (const [key, value] of searchParams) {
+    
     if (key == "user_message") {
+      console.log("\nkey: " + key + "\nvalue: " + value);
       noteList.set(uid, value);
       console.log(noteList);
+      socket.send("{\"text\" : " + JSON.stringify(noteList.get(uid)) + ", \"uid\" : " + uid + "}" );
+      // socket.send("{\"uid\" : " + uid + "}" );
+      console.log("socket sending");
     }
+  }
   }
 
   function submitting() {
     // socket.send("{\"text\" : " + noteList.get(uid).toString() + ", \"uid\" : " + uid + "}" );
-    socket.send("{\"uid\" : " + uid + "}" );
-    searchParams.set("display", "small");
-    console.log("socket sending");
-    
+    // socket.send("{\"uid\" : " + uid + "}" );
+    // console.log(noteList);
   }
   
   //is called everytime message is received
   socket.onmessage = function(receivedMessage) {
     var received = JSON.parse(receivedMessage.data);
     console.log(received);
+    
     console.log("socket receiving");
+    if (!noteList.has(received.uid)) {
+      noteList.set(received.uid, received.text);
+    }
+    
+    console.log(noteList);
 
     var tag = document.createElement("p");
-    var message = document.createTextNode(received.text);
+    var message = document.createTextNode(noteList.get(received.uid));
     tag.appendChild(message);
     var element = document.getElementById("new");
     element.appendChild(tag);
