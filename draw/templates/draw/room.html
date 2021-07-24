@@ -15,7 +15,7 @@
 </head>
 <body class="bg-secondary">
   <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
-  <div class="container-flex">
+  <div class="container-flex" id = "board">
     <div class="row">
       <div class="col ml-3">
         <h2 class="py-5 text-center border border-dark rounded bg-warning">Recommendations!</h2>
@@ -89,7 +89,7 @@
     </div> -->
   </div>
 
-  <form action="" method="get" id="form">
+  <form action="" method="GET" id="form" onsubmit="submitting()">
     <div class="formelem">
       <label for="msg">Message:</label>
       <textarea id="msg" name="user_message"></textarea>
@@ -99,28 +99,66 @@
     </div>
   </form>
 
+  <div id="new">
+
+  </div>
+
 
 </body>
 <script>
   var searchParams = new URLSearchParams(window.location.search);
   var uid = Date.now() % 10000;
   var noteList = new Map();
+  var small = true;
+
+  
 
   var socket = new WebSocket(
       'ws://' + window.location.host + '/ws/draw');
 
   for (const [key, value] of searchParams) {
     console.log("\nkey: " + key + "\nvalue: " + value);
+    if (key == "display") {
+      if (value == "large") {
+        let form = document.getElementById("form");
+        small = false;
+        form.style.display = "none";
+      }
+      if (value == "small") {
+        let board = document.getElementById("board");
+        board.style.display = "none";
+      }
+    }
+    if (small == true) {
+      let board = document.getElementById("board");
+      board.style.display = "none";
+    }
     if (key == "user_message") {
       noteList.set(uid, value);
-      socket.send("{\"text\" : " + noteList.get(uid) + ", \"uid\" : " + uid + "}" );
+      console.log(noteList);
     }
+  }
+
+  function submitting() {
+    // socket.send("{\"text\" : " + noteList.get(uid).toString() + ", \"uid\" : " + uid + "}" );
+    socket.send("{\"uid\" : " + uid + "}" );
+    searchParams.set("display", "small");
+    console.log("socket sending");
+    
   }
   
   //is called everytime message is received
   socket.onmessage = function(receivedMessage) {
     var received = JSON.parse(receivedMessage.data);
     console.log(received);
+    console.log("socket receiving");
+
+    var tag = document.createElement("p");
+    var message = document.createTextNode(received.text);
+    tag.appendChild(message);
+    var element = document.getElementById("new");
+    element.appendChild(tag);
+
   }
 
   socket.onclose = function(e) {
