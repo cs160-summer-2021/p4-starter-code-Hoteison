@@ -142,7 +142,7 @@
       console.log("\nkey: " + key + "\nvalue: " + value);
       noteList.set(uid, value);
       console.log(noteList);
-      socket.send("{\"text\" : " + JSON.stringify(noteList.get(uid)) + ", \"uid\" : " + uid + "}" );
+      socket.onopen = () => socket.send("{\"text\" : " + JSON.stringify(noteList.get(uid)) + ", \"uid\" : " + uid + "}" );
       // socket.send("{\"uid\" : " + uid + "}" );
       console.log("socket sending");
     }
