@@ -10,3 +10,31 @@
   justify-content: center;
   text-align: center;
 }
+
+form {
+  margin: 0 auto;
+  padding: 1em;
+  border: 1px solid #CCC;
+  border-radius: 1em;
+  box-shadow: 5px 5px 5px 5px;
+  background-color: beige;
+}
+label {
+  display: inline-block;
+  text-align: right;
+  font-size: 2em;
+}
+.formelem {
+  text-align: center;
+}
+textarea {
+  vertical-align: top;
+  width: 50%;
+  /* height: 30%; */
+}
+
+input:focus,
+textarea:focus {
+  /* Additional highlight for focused elements */
+  border-color: #000;
+}
