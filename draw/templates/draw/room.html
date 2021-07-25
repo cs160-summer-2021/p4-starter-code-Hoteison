@@ -64,16 +64,27 @@
   //the problem is simply that it doesnt run when you hit the image submit button
   //its wack
   function submitImage() {
-    var fileList = document.getElementById('input').files;
+    
+
+    // var fileList = document.getElementById('input').files;
+    var fileList = document.getElementById('customFile').files;
     if (fileList.length > 0) {
-      const selectedFile = fileList[0];
-      console.log(selectedFile);
+      
+      var selectedFile = fileList[0];
+
+      var srcData = "";
+      var reader = new FileReader();
+      reader.onload = function (fileLoadedEvent) {
+        srcData = fileLoadedEvent.target.result;
+      }
+      reader.readAsDataURL(selectedFile);
 
       var image = {
         "type": "image",
         "text": document.getElementById("caption").value,
-        "src": ""
+        "src": srcData
       };
+
       socket.send(JSON.stringify(image));
     }
   }
