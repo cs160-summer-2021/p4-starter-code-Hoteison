@@ -84,16 +84,20 @@
 
   //there is 100% a better way to do thos but idk how
   function createCard(src, text) {
-    var col = document.createElement("div").classList.add("col-md-4");
-    var card = document.createElement("div").classList.add("card", "mb-4", "box-shadow");
+    var col = document.createElement("div");
+    col.classList.add("col-md-4");
+    var card = document.createElement("div");
+    card.classList.add("card", "mb-4", "box-shadow");
     var img = document.createElement("img");
     img.src = src;
-    var card_body = document.createElement("div").classList.add("card-body");
-    var card_text = document.createElement("div").classList.add("card-text");
+    var card_body = document.createElement("div");
+    card_body.classList.add("card-body");
+    var card_text = document.createElement("div");
+    card_text.classList.add("card-text");
     var message = document.createTextNode(text);
 
     card_text.appendChild(message);
-    document.getElementsByClassName("row").appendChild(col);
+    document.getElementsByClassName("row")[0].appendChild(col);
     col.appendChild(card);
     card.appendChild(img);
     card.appendChild(card_body);
