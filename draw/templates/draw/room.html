@@ -13,167 +13,71 @@
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
 </head>
-<body class="bg-secondary" onload="checkmsg()">
+<body class="bg-secondary">
   <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
-  <div class="container-flex" id = "board">
-    <div class="row">
-      <div class="col ml-3">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">Recommendations!</h2>
 
-      <div class="container-flex">
-        <div class="row no-gutters">
-          <div class="col-6 flex-column">
-            <div class="sticky-note">OK</div>
-            <div class="sticky-note">i kinda went sicko mode</div>
-          </div>
-          <div class="col-6 flex-column">
-            <div class="sticky-note">sorry</div>
-            <div class="sticky-note">that mb</div>
-          </div>
-        </div>
+  <form onsubmit="submitText()" class="mb-4">
+    <div class="form-group">
+      <label for="msg"><h3>Message:</h3></label>
+      <div class="form-group">
+        <label for="textOption">What type of submission are you making?</label>
+        <select class="form-control" id="textOption">
+          <option value=1>Recommendations for others!</option>
+          <option value=2>Tell us about your experience!</option>
+          <option value=3>Write anything at all!</option>
+        </select>
       </div>
-
-      </div>
-      <div class="col">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">How was your experience?</h2>
-
-        <div class="container-flex">
-          <div class="row no-gutters">
-            <div class="col-6 flex-column">
-              <div class="sticky-note">but hey</div>
-              <div class="sticky-note">it works</div>
-            </div>
-            <div class="col-6 flex-column">
-              <div class="sticky-note">it looks ok</div>
-              <div class="sticky-note">no?</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div class="col mr-3">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">Anything you want!</h2>
-
-        <div class="container-flex">
-          <div class="row no-gutters">
-            <div class="col-6 flex-column">
-              <div class="sticky-note">i know</div>
-              <div class="sticky-note">the amount of bootstrap</div>
-            </div>
-            <div class="col-6 flex-column">
-              <div class="sticky-note">hard to read</div>
-              <div class="sticky-note">just msg me if you have questions</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+      <textarea class="form-control" id="msg" rows="3"></textarea>
     </div>
-
-    <!-- <div class="row">
-      <div class="col d-flex justify-content-center">
-        <div class="sticky-note"></div>
-        <div class="sticky-note"></div>
-
-      </div>
-      <div class="col d-flex justify-content-center">
-        <div class="sticky-note"></div>
-        <div class="sticky-note"></div>
-
-      </div>
-      <div class="col d-flex justify-content-center">
-        <div class="sticky-note"></div>
-        <div class="sticky-note"></div>
-
-      </div>
-    </div> -->
-  </div>
-
-  <form action="" method="GET" id="form" onsubmit="submitting()">
-    <div class="formelem">
-      <label for="msg">Message:</label>
-      <textarea id="msg" name="user_message"></textarea>
-    </div>
-    <div class="formelem">
-      <input type="submit" value="Send">
-    </div>
+    <button type="submit" class="btn btn-secondary mb-2">Submit</button>
   </form>
 
-  <div id="new">
-
-  </div>
-
+  <form onsubmit="submitImage()">
+    <div class="form-group">
+      <label for="customFile"><h3>Share an image!</h3></label>
+      <input class="d-block" type="file" id="customFile" accept="image/*">
+      <input class="form-control mt-3" type="text" id="caption" placeholder="Add a caption!"></input>
+    </div>
+    <button type="submit" class="btn btn-secondary mb-2">Submit</button>
+  </form>
+</body>
 
 </body>
 <script>
   var searchParams = new URLSearchParams(window.location.search);
-  var uid = Date.now() % 10000;
   var noteList = new Map();
-  var small = true;
-
-  
 
   var socket = new WebSocket(
       'ws://' + window.location.host + '/ws/draw');
 
-  for (const [key, value] of searchParams) {
-    if (key == "display") {
-      if (value == "large") {
-        let form = document.getElementById("form");
-        small = false;
-        form.style.display = "none";
-      }
-      if (value == "small") {
-        let board = document.getElementById("board");
-        board.style.display = "none";
-      }
+  function submitText() {
+    var text = {
+      "type": "text",
+      "text": document.getElementById("msg").value,
+      "option": document.getElementById("textOption").value
+    };
+    socket.send(JSON.stringify(text));
+  }
+
+  //I have determined that this shit doesnt work for some reason
+  //idk why
+  //the problem is simply that it doesnt run when you hit the image submit button
+  //its wack
+  function submitImage() {
+    var fileList = document.getElementById('input').files;
+    if (fileList.length > 0) {
+      const selectedFile = fileList[0];
+      console.log(selectedFile);
+
+      var image = {
+        "type": "image",
+        "text": document.getElementById("caption").value,
+        "src": ""
+      };
+      socket.send(JSON.stringify(image));
     }
   }
 
-  if (small == true) {
-    let board = document.getElementById("board");
-    board.style.display = "none";
-  }
-
-  function checkmsg() {
-    for (const [key, value] of searchParams) {
-    
-    if (key == "user_message") {
-      console.log("\nkey: " + key + "\nvalue: " + value);
-      noteList.set(uid, value);
-      console.log(noteList);
-      socket.onopen = () => socket.send("{\"text\" : " + JSON.stringify(noteList.get(uid)) + ", \"uid\" : " + uid + "}" );
-      // socket.send("{\"uid\" : " + uid + "}" );
-      console.log("socket sending");
-    }
-  }
-  }
-
-  function submitting() {
-    // socket.send("{\"text\" : " + noteList.get(uid).toString() + ", \"uid\" : " + uid + "}" );
-    // socket.send("{\"uid\" : " + uid + "}" );
-    // console.log(noteList);
-  }
-  
-  //is called everytime message is received
-  socket.onmessage = function(receivedMessage) {
-    var received = JSON.parse(receivedMessage.data);
-    console.log(received);
-    
-    console.log("socket receiving");
-    if (!noteList.has(received.uid)) {
-      noteList.set(received.uid, received.text);
-    }
-    
-    console.log(noteList);
-
-    var tag = document.createElement("p");
-    var message = document.createTextNode(noteList.get(received.uid));
-    tag.appendChild(message);
-    var element = document.getElementById("new");
-    element.appendChild(tag);
-
-  }
 
   socket.onclose = function(e) {
       console.error('Chat socket closed unexpectedly');

@@ -1,6 +1,6 @@
 .sticky-note {
-  height: 13vw;
-  width: 13vw;
+  height: 12em;
+  width: 12em;
   background-color: #ffd70f;
   display: inline-flex;
   margin: 0.3vw;
@@ -21,8 +21,6 @@ form {
 }
 label {
   display: inline-block;
-  text-align: right;
-  font-size: 2em;
 }
 .formelem {
   text-align: center;

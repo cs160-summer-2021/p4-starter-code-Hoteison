@@ -1,0 +1,104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="mx-5 mb-0">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>P4 Drawing</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'draw/style.css' %}" />
+
+    <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
+
+</head>
+<body class="bg-secondary">
+  <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
+  <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg">
+            <div class="card-body">
+              <div class="card-text">Hello!</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg">
+            <div class="card-body">
+              <div class="card-text">Hello!</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg">
+            <div class="card-body">
+              <div class="card-text">Hello!</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg">
+            <div class="card-body">
+            <div class="card-text">Hello!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+</body>
+<script>
+
+  var socket = new WebSocket(
+      'ws://' + window.location.host + '/ws/draw');
+  
+  //is called everytime message is received
+  socket.onmessage = function(receivedMessage) {
+    console.log(receivedMessage)
+    var received = JSON.parse(receivedMessage.data);
+    console.log(received);
+    
+    console.log("socket receiving");
+    if (received.type == "image") {
+      createCard(received.src, received.text);
+    }
+  }
+
+  socket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+  };
+//   <div class="col-md-4">
+//           <div class="card mb-4 box-shadow">
+//             <img class="card-img-top" src="https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg">
+//             <div class="card-body">
+//               <div class="card-text">Hello!</div>
+//             </div>
+//           </div>
+//         </div>
+
+  //there is 100% a better way to do thos but idk how
+  function createCard(src, text) {
+    var col = document.createElement("div").classList.add("col-md-4");
+    var card = document.createElement("div").classList.add("card", "mb-4", "box-shadow");
+    var img = document.createElement("img");
+    img.src = src;
+    var card_body = document.createElement("div").classList.add("card-body");
+    var card_text = document.createElement("div").classList.add("card-text");
+    var message = document.createTextNode(text);
+
+    card_text.appendChild(message);
+    document.getElementsByClassName("row").appendChild(col);
+    col.appendChild(card);
+    card.appendChild(img);
+    card.appendChild(card_body);
+    card_body.appendChild(card_text);
+  }
+
+</script>
+</html>

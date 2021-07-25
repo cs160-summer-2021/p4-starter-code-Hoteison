@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html class="mx-5 mb-0">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>P4 Drawing</title>
@@ -12,63 +12,92 @@
     <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
-    <style type="text/css">
-    </style>
-
 </head>
-<body>
-    <!-- You may change the dimensions of this canvas -->
-    <canvas id="myCanvas" class="bg-white" width="750px" height="750px"></canvas>
+<body class="bg-secondary">
+  <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
+  <div class="container-flex">
+    <div class="row">
+      <div class="col">
+        <h2 class="py-5 text-center border border-dark rounded bg-warning">Recommendations!</h2>
+
+      <div class="container-flex">
+        <div class="row no-gutters">
+          <div class="col flex-column" id=first>
+            <div class="sticky-note">OK</div>
+            <div class="sticky-note">i kinda went sicko mode</div>
+            <div class="sticky-note">sorry</div>
+            <div class="sticky-note">that mb</div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <div class="col">
+        <h2 class="py-5 text-center border border-dark rounded bg-warning">How was your experience?</h2>
+
+        <div class="container-flex">
+          <div class="row no-gutters">
+            <div class="col flex-column" id=second>
+              <div class="sticky-note">but hey</div>
+              <div class="sticky-note">it works</div>
+              <div class="sticky-note">it looks ok</div>
+              <div class="sticky-note">no?</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col">
+        <h2 class="py-5 text-center border border-dark rounded bg-warning">Anything you want!</h2>
+
+        <div class="container-flex">
+          <div class="row no-gutters">
+            <div class="col flex-column" id=third>
+              <div class="sticky-note">i know</div>
+              <div class="sticky-note">the amount of bootstrap</div>
+              <div class="sticky-note">hard to read</div>
+              <div class="sticky-note">just msg me</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </body>
 <script>
 
-    // setting up the canvas and one paper tool
-    var canvas = document.getElementById('myCanvas');
-    paper.setup(canvas);
-    var tool = new paper.Tool();
-    var uid = Date.now() % 10000;
-    var color = "#" + Math.floor((uid / 10000)*16777215).toString(16);
+  var socket = new WebSocket(
+      'ws://' + window.location.host + '/ws/draw');
+  
+  //is called everytime message is received
+  socket.onmessage = function(receivedMessage) {
+    console.log(receivedMessage)
+    var received = JSON.parse(receivedMessage.data);
+    console.log(received);
+    
+    console.log("socket receiving");
 
-    var path = new paper.Path();
-    var pathList = new Map();
-    var isSmall = false;
-
-
-    // getting the URL (you may want to use for Exercise 3)
-    var url = window.location.href;
-    if (window.location.href.includes("small")) {
-        isSmall = true;
-    }
-
-    var socket = new WebSocket(
-        'ws://' + window.location.host + '/ws/draw');
-
-    tool.onMouseMove = function(event) { //http://paperjs.org/reference/tool/ path examples
-       path.strokeColor = color;
-       path.add(event.point);
-
-       // You may need to add code here if you want to pass any other information.
-       socket.send("{\"x\" : " + event.point.x + ", \"y\" : " + event.point.y + ", \"uid\" : " + uid + "}" );
-    }
-
-    //is called everytime message is received
-    socket.onmessage = function(receivedMessage) {
-        var received = JSON.parse(receivedMessage.data);
-        // You will probably want to add some code here to draw more lines.
-        if (!isSmall) {
-            if (!pathList.has(received.uid)) {
-                var remotePath = new paper.Path();
-                pathList.set(received.uid, remotePath);
-                console.log("1");
-            }
-            pathList.get(received.uid).strokeColor = "#" + Math.floor((received.uid / 10000)*16777215).toString(16);
-            pathList.get(received.uid).add(new paper.Point(received.x, received.y));
+    if (received.type == "text") {
+        var sticky_note = document.createElement("div");
+        sticky_note.classList.add("sticky-note");
+        var message = document.createTextNode(received.text);
+        sticky_note.appendChild(message);
+        var element;
+        if (received.option == 1) {
+            element = document.getElementById("first");
+        } else if (received.option == 2) {
+            element = document.getElementById("second");
+        } else {
+            element = document.getElementById("third");
         }
+        element.appendChild(sticky_note);
     }
+  }
 
-    socket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
-    };
+  socket.onclose = function(e) {
+      console.error('Chat socket closed unexpectedly');
+  };
 
 </script>
 </html>
