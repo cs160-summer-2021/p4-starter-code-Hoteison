@@ -66,7 +66,8 @@
     
     console.log("socket receiving");
     if (received.type == "image") {
-      createCard(received.src, received.text);
+      // createCard(received.src, received.text);
+      createCard("https://m.media-amazon.com/images/M/MV5BMTQzMjc1OTU5NF5BMl5BanBnXkFtZTgwODIwMTEwMDE@._V1_.jpg", received.text);
     }
   }
 
