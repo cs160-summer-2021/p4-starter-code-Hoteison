@@ -1,14 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Lato&display=swap");
+
+.caveat {
+  font-family: Caveat;
+}
+
+.lato {
+  font-family: Lato;
+}
+
+.title {
+  font-size: 6em;
+}
+
+.cyan {
+  background-color: #7afcff;
+}
+
+.pink {
+  background-color: #ff65a3;
+}
+
+.yellow {
+  background-color: #feff9c;
+}
+
 .sticky-note {
-  height: 12em;
-  width: 12em;
-  background-color: #ffd70f;
+  min-height: 13vw;
+  width: 13vw;
+  background-color: #fff740;
+  padding: 1vw;
   display: inline-flex;
   margin: 0.3vw;
-  flex-direction: column;
   flex-wrap: wrap;
-  align-content: center;
   justify-content: center;
-  text-align: center;
+  font-size: 2em;
+  font-family: Caveat;
 }
 
 form {
@@ -35,4 +61,15 @@ input:focus,
 textarea:focus {
   /* Additional highlight for focused elements */
   border-color: #000;
+}
+
+h2 {
+  font-size: 2.5em;
+}
+
+.cork {
+  background-image: url('/static/images/cork-board.jpeg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
 }
