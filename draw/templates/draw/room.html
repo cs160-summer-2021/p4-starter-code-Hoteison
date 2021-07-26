@@ -67,26 +67,34 @@
   //its wack
   function submitImage() {
     // var fileList = document.getElementById('input').files;
-    var fileList = document.getElementById('customFile').files;
-    if (fileList.length > 0) {
+    // var fileList = document.getElementById('customFile').files;
+    // if (fileList.length > 0) {
       
-      var selectedFile = fileList[0];
+    //   var selectedFile = fileList[0];
 
-      var srcData = "";
-      var reader = new FileReader();
-      reader.onload = function (fileLoadedEvent) {
-        srcData = fileLoadedEvent.target.result;
-      }
-      reader.readAsDataURL(selectedFile);
+    //   var srcData = "";
+    //   var reader = new FileReader();
+    //   reader.onload = function (fileLoadedEvent) {
+    //     srcData = fileLoadedEvent.target.result;
+    //   }
+    //   reader.readAsDataURL(selectedFile);
 
-      var image = {
-        "type": "image",
-        "text": document.getElementById("caption").value,
-        "src": document.getElementById("src").value
-      };
+    //   var image = {
+    //     "type": "image",
+    //     "text": document.getElementById("caption").value,
+    //     "src": document.getElementById("src").value
+    //   };
 
-      socket.send(JSON.stringify(image));
-    }
+    //   socket.send(JSON.stringify(image));
+    // }
+
+    var image = {
+      "type": "image",
+      "text": document.getElementById("caption").value,
+      "src": document.getElementById("src").value
+    };
+
+    socket.send(JSON.stringify(image));
   }
 
 
