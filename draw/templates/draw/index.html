@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html class="mx-5 mb-0">
+<html class="mx-5 mb-0 cork">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>P4 Drawing</title>
@@ -13,27 +13,37 @@
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
 
 </head>
-<body class="bg-secondary">
-  <h1 class="m-5 p-5 text-center border border-dark rounded bg-warning">Caravan</h1>
+<body class="bg-transparent">
+  <div class="my-5 p-0 text-center border border-dark rounded cyan">
+    <h1 class="title lato">Berkeley Farmers' Market</h1>
+    <h4>Community Bulletin Board</h4>
+  </div>
+
   <div class="container-flex">
     <div class="row">
       <div class="col">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">Recommendations!</h2>
+        <h2 class="py-5 text-center border border-dark rounded caveat yellow">Recommendations!</h2>
 
-      <div class="container-flex">
-        <div class="row no-gutters">
-          <div class="col flex-column" id=first>
+          <!-- <div class="container-flex">
+            <div class="row no-gutters">
+              <div class="col flex-column" id=first>
+                <div class="sticky-note">OK</div>
+                <div class="sticky-note">i kinda went sicko mode</div>
+                <div class="sticky-note">sorry</div>
+                <div class="sticky-note">that mb</div>
+              </div>
+            </div>
+          </div> -->
+          <div id="first">
             <div class="sticky-note">OK</div>
             <div class="sticky-note">i kinda went sicko mode</div>
             <div class="sticky-note">sorry</div>
-            <div class="sticky-note">that mb</div>
+            <div class="sticky-note">that m Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exab</div>
           </div>
-        </div>
-      </div>
 
       </div>
       <div class="col">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">How was your experience?</h2>
+        <h2 class="py-5 text-center border border-dark rounded caveat pink">How was your experience?</h2>
 
         <div class="container-flex">
           <div class="row no-gutters">
@@ -48,7 +58,7 @@
 
       </div>
       <div class="col">
-        <h2 class="py-5 text-center border border-dark rounded bg-warning">Anything you want!</h2>
+        <h2 class="py-5 text-center border border-dark rounded caveat bg-warning">Anything you want!</h2>
 
         <div class="container-flex">
           <div class="row no-gutters">
@@ -69,13 +79,13 @@
 
   var socket = new WebSocket(
       'ws://' + window.location.host + '/ws/draw');
-  
+
   //is called everytime message is received
   socket.onmessage = function(receivedMessage) {
     console.log(receivedMessage)
     var received = JSON.parse(receivedMessage.data);
     console.log(received);
-    
+
     console.log("socket receiving");
 
     if (received.type == "text") {
